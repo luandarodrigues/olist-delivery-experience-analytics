@@ -1,19 +1,21 @@
 # Brazilian E-Commerce Delivery Experience Analytics
 
-**E-commerce Analytics | SQL Data Modeling | Customer Experience | Logistics Performance | Machine Learning | Storytelling Dashboard**
+**E-commerce Analytics | SQL Data Modeling | Customer Experience | Logistics Performance | Machine Learning | Business Storytelling**
 
-This project analyzes the Brazilian Olist public e-commerce dataset to understand how logistics, payments, product categories and delivery performance affect customer satisfaction.
+This project analyzes the Brazilian Olist public e-commerce dataset to understand how logistics, product category, payment behavior and delivery performance affect customer satisfaction.
 
-The central story is simple: **in marketplace operations, delivery experience often becomes the review**. Customer dissatisfaction is not only a product issue; it is shaped by the full post-purchase chain: promise, distance, freight, seller structure, delivery time and communication.
+The central story is: **in marketplace operations, delivery experience becomes the review**. A low customer review is not only a product signal. It is often the visible end of an operational chain involving seller structure, freight, distance, estimated delivery promise, actual delivery time and customer expectation.
 
-## Interactive storytelling dashboard
+## Interactive dashboard
 
-**[Open the dashboard →](https://luandarodrigues.github.io/olist-delivery-experience-analytics/)**
+**[Open the dashboard →](https://luandarodrigues.github.io/olist-delivery-experience-analytics/?v=4)**
 
-The dashboard is built as a Power BI-style storytelling panel using the raw CSV files from the repository. It calculates business insights directly from the data and is organized as an analytical narrative:
+The dashboard was designed as a bilingual **PT/EN storytelling panel** inspired by Olist's visual identity: deep navy sections, white SaaS-style cards, rounded blue CTAs, light-blue highlights and a product/marketplace narrative.
+
+The story is organized into nine analytical sections:
 
 1. Executive story
-2. Raw → clean mart
+2. Raw → clean analytical mart
 3. Delay hurts reviews
 4. Geography changes cost
 5. Category exposure
@@ -40,7 +42,9 @@ Main raw entities used:
 - Sellers
 - Customers
 - Product category translation
-- Geolocation reference, when available
+- Geolocation reference
+
+The raw CSV files are stored in `data/raw/` using **Git LFS**. The dashboard reads derived analytical CSVs from `data/` to keep GitHub Pages fast and stable.
 
 ## Raw to clean analytical mart
 
@@ -69,7 +73,7 @@ LEFT JOIN payment_agg
 LEFT JOIN review_agg;
 ```
 
-This mart allows the analysis to connect operational facts with review outcomes at order level.
+This mart connects operational facts with review outcomes at order level. The unit of analysis is not just a transaction; it is the **order experience**.
 
 ## Executive metrics
 
@@ -92,17 +96,17 @@ This mart allows the analysis to connect operational facts with review outcomes 
 
 | Hypothesis | Test | Business interpretation |
 |---|---|---|
-| Late deliveries have higher low-review risk | Compare low-review rate for delayed vs on-time/early orders | Delay is a customer experience risk driver |
+| Late deliveries have higher low-review risk | Compare low-review exposure in delayed orders | Delay is a customer experience risk driver |
 | Cross-state delivery changes cost and time | Compare same-state vs cross-state delivery days and freight | Geography should be treated as an operating model, not just a location field |
 | Some categories combine scale and dissatisfaction exposure | Rank categories by volume × low-review rate | Category prioritization should consider operational friction, not only sales volume |
 
 ## Main findings
 
-- Delivery delay is the strongest signal associated with poor reviews.
+- Delivery performance is a central driver of customer experience.
 - Cross-state deliveries are slower and more expensive than same-state deliveries.
 - Same-state deliveries averaged around **7.9 days**, while cross-state deliveries averaged around **15.0 days**.
 - Cross-state freight was also higher, with average freight of about **R$ 23.69** versus **R$ 13.46** for same-state deliveries.
-- Product categories such as bed bath table, furniture decor and computers accessories combine high sales volume with relatively high low-review rates.
+- Categories such as bed bath table, furniture decor and computers accessories combine high volume with relevant low-review exposure.
 - Credit card is the dominant payment method by transaction volume and payment value.
 
 ## Machine learning task
@@ -114,7 +118,7 @@ A classification model was built to predict whether an order would receive a low
 | Logistic Regression | 0.768 | 0.752 | 0.296 | 0.597 | 0.396 |
 | Random Forest | 0.839 | 0.759 | 0.397 | 0.519 | 0.450 |
 
-The target is imbalanced, so recall and precision are more useful than accuracy alone. The model is not intended as a final production model, but as an analytical layer to identify dissatisfaction risk drivers.
+The target is imbalanced, so recall, precision and F1 are more useful than accuracy alone. The model is not intended as a final production system. It is an analytical risk layer to help identify where dissatisfaction is more likely to appear.
 
 ## Most relevant features
 
@@ -134,35 +138,47 @@ The dashboard includes scenario logic to move from descriptive analytics to deci
 
 | Scenario | Assumption | Use |
 |---|---|---|
-| Delay rescue | Reduce low-review exposure among late orders | Prioritize customer communication and exception handling |
-| Category focus | Act on categories combining high scale and high dissatisfaction | Target seller/category operational improvements |
-| Cross-state control | Treat long-distance delivery as a distinct SLA group | Improve delivery promise accuracy and freight monitoring |
+| Delay rescue | Prioritize a share of delayed orders | Customer communication and exception handling |
+| Category focus | Act on high-scale, high-risk categories | Seller/category operational improvement |
+| Cross-state control | Treat long-distance delivery as a distinct SLA group | Delivery promise accuracy and freight monitoring |
+| Review risk reduction | Reduce low-review exposure in priority segments | CX protection before the review becomes public |
+
+## Project structure
+
+```text
+olist-delivery-experience-analytics/
+├── README.md
+├── data/
+│   ├── executive_summary.csv
+│   ├── feature_importance.csv
+│   ├── model_metrics.csv
+│   ├── monthly_orders_revenue.csv
+│   ├── payment_summary.csv
+│   ├── same_state_vs_cross_state_delivery.csv
+│   ├── top_categories_summary.csv
+│   └── raw/
+│       └── Olist raw CSV files stored with Git LFS
+├── docs/
+│   └── index.html
+├── scripts/
+│   └── download_olist_raw_kagglehub.py
+└── sql/
+    └── 01_build_order_experience_mart.sql
+```
 
 ## Tools and methods
 
 - Python
 - Pandas
 - SQL / SQLite-ready analytical modeling
+- Git LFS
+- KaggleHub
 - Client-side JavaScript analytics
 - Feature engineering
 - Classification modeling
 - Customer experience analytics
 - Logistics performance analysis
 - Business storytelling dashboard
-
-## Files
-
-```text
-olist-delivery-experience-analytics/
-├── README.md
-├── data/
-│   ├── raw Olist CSV files
-│   └── derived analytical CSV files, when available
-├── docs/
-│   └── index.html
-└── sql/
-    └── 01_build_order_experience_mart.sql
-```
 
 ## Why this project matters
 
